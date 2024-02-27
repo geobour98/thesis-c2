@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="/static/css/xterm.css" />
+    <script src="/static/js/xterm.js"></script>
+{% endblock %}
+
+{% block content %}
+<h1 class="display-4">Results</h1>
+
+<!--
+<div>
+    {% if data %}
+        <h2>Received Data:</h2>
+        <ul>
+            {% for item in data %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No data received yet.</p>
+    {% endif %}
+</div>
+-->
+
+<div id="terminal"></div>
+
+<script>
+    // Terminal initialization
+    const term = new Terminal({ 
+        cursorBlink: true,
+        fontSize: 20
+    });
+    term.open(document.getElementById('terminal'));
+    term.element.style.textAlign = 'left';
+
+    // Decode from HTML ( ex &#39; to ' )
+    function decodeHtml(str) {
+        var div = document.createElement('div');
+
+        div.innerHTML = str;
+
+        return div.textContent || div.innerText || "";
+    }
+
+    // If data from the agent is provided
+    {% if data %}
+        {% for item in data %}
+            // Decode item
+            var decodedItem = decodeHtml("{{ item }}");
+
+            // Split by quote to separate command from result
+            var parts = decodedItem.split("'");
+            
+            // Command between 1st and 2nd quote
+            var command = parts[1]; 
+
+            // Result between 3rd and 4th quote
+            var result = parts[3]; 
+
+            term.writeln('\x1B[1;31m[george@victim ~]$ \x1B[0m\x1B[1m' + command + '\x1B[0m');
+            term.writeln('');
+            term.writeln('\x1B[1;33m' + result + '\x1B[0m');
+            term.writeln('');
+        {% endfor %}
+    {% else %}
+        term.writeln('No data received yet.');
+    {% endif %}
+</script>
+
+{% endblock %}

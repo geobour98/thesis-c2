@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>I2P Anonymous Server</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" />
+
+    <style>
+        .navbar-brand.active{
+            color: #000000;
+            text-decoration: underline;
+        }
+        h3 {
+	        text-align: left;
+        }
+        .welcome-message{
+            margin-right: 20px
+        }
+    </style>
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ url_for('main.index') }}">Home</a>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        {% if not current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="navbar-brand {{ 'active' if active_page == 'login' else '' }}" href="{{ url_for('auth.login') }}">Login</a>
+                        </li>
+                        {% endif %}
+                        {% if current_user.is_authenticated and (active_page == 'index' or active_page == 'results' or active_page == 'tasks') %}
+                        <span class="navbar-text welcome-message">
+                            Welcome, {{ username }}!
+                        </span>
+                        {% endif %}
+			            {% if current_user.is_authenticated %}
+			            <li class="nav-item">
+                            <a class="navbar-brand {{ 'active' if active_page == 'results' else '' }}" href="{{ url_for('main.results') }}">Results</a>
+                        </li>
+			            {% endif %}
+                        {% if current_user.is_authenticated %}
+			            <li class="nav-item">
+                            <a class="navbar-brand {{ 'active' if active_page == 'tasks' else '' }}" href="{{ url_for('main.tasks') }}">Tasks</a>
+                        </li>
+			            {% endif %}
+                        {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="navbar-brand" href="{{ url_for('auth.logout') }}">Logout</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="py-4 text-center">
+        <div class="container">
+           {% block content %}
+           {% endblock %}
+        </div>
+    </main>
+</body>
+
+</html>

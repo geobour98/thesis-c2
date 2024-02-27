@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="display-4">Taskings</h1>
+{% for task in tasks %}
+    <div>
+        <p>Command: {{ task.command }}</p>
+        <p>Status: {{ 'Fetched' if task.is_fetched else 'Not Fetched' }}</p>
+        <p>Timestamp: {{ task.timestamp }}</p>
+    </div>
+{% else %}
+    <p>No tasks available.</p>
+{% endfor %}
+{% endblock %}

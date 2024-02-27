@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="display-4">Tasks</h1>
+
+{% if message %}
+     <div class="alert alert-info" style="white-space: pre-wrap;">{{ message|safe }}</div>
+{% endif %}
+
+<form method="POST" action="{{ url_for('main.tasks') }}">
+    <input type="text" name="command" placeholder="Enter command">
+    <button type="submit">Add Task</button>
+</form>
+
+<h2>Existing Tasks</h2>
+<table class="table table-hover table-dark">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Command</th>
+            <th>Status</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for task in tasks %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ task.command }}</td>
+                <td>{{ 'Fetched' if task.is_fetched else 'Not Fetched' }}</td>
+                <td>{{ task.timestamp.strftime('%d-%m-%Y %H:%M:%S') }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">No tasks available.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
